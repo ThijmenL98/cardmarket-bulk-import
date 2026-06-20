@@ -3,23 +3,47 @@ import * as yup from 'yup';
 import { compareNormalized, normalizeString } from '../../../../utils';
 import type { TranslationKey } from '../../../../utils';
 import { readCsv } from '../../../../utils/csv';
+import { parseBoolean } from '../utils';
+import { matchCondition } from '../utils/condition';
+import type { ConditionData } from '../utils/condition';
 import {
+  commentElSelector,
+  conditionElSelector,
   getWebsiteRows,
   languageElSelector,
   priceElSelector,
   quantityElSelector,
+  signedElSelector,
 } from '../utils/html';
 import { matchLanguage } from '../utils/language';
 import type { LanguageData } from '../utils/language';
 
+export type BaseColumnMapping = {
+  name: string,
+  language: string | undefined,
+  condition: string | undefined,
+  isSigned: string | undefined,
+  comment: string | undefined,
+  quantity: string | undefined,
+  price: string | undefined,
+};
+
 export type CommonParsedRowFields = {
   id: number,
-  name: string,
-  matchedName: string | null,
+  name: {
+    matchedName: string | null,
+    value: string,
+  },
   language: {
     matched: boolean,
     data: LanguageData,
   },
+  condition: {
+    matched: boolean,
+    data: ConditionData,
+  },
+  isSigned: boolean,
+  comment: string,
   quantity: number,
   price: number,
   enabled: boolean,
@@ -75,14 +99,20 @@ class GenericGameManager<
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   matchName(arg0: string, ...args: string[]): Promise<string | null> {
     const parsedName = arg0;
-    const mappedNames = getWebsiteRows().map((el) => el.textContent);
     let matchedName = null;
-    for (const name of mappedNames) {
-      if (compareNormalized(name, parsedName)) {
-        return Promise.resolve(name);
+    for (const row of getWebsiteRows()) {
+      const rowName = row.textContent;
+      // Look for a translated name besides it
+      const translatedName = row.nextSibling?.textContent ?? '';
+      if (compareNormalized(rowName, parsedName) || compareNormalized(translatedName, parsedName)) {
+        return Promise.resolve(rowName);
       }
+
       // If we don't find an exact match, look for the last one that contains it
-      if (normalizeString(name).includes(normalizeString(parsedName))) matchedName = name;
+      if (
+        normalizeString(rowName).includes(normalizeString(parsedName))
+        || normalizeString(translatedName).includes(normalizeString(parsedName))
+      ) matchedName = rowName;
     }
     return Promise.resolve(matchedName);
   };
@@ -103,12 +133,7 @@ class GenericGameManager<
   async parseRow(
     id: number,
     rawRowData: Record<string, unknown>,
-    columnMapping: ({
-      name: string,
-      quantity: string | undefined,
-      price: string | undefined,
-      language: string | undefined,
-    } & Record<ExtraColumnInputs, string | undefined>),
+    columnMapping: (BaseColumnMapping & Record<ExtraColumnInputs, string | undefined>),
   ): Promise<CommonParsedRowFields & ExtraParsedRowFields> {
     const parsedName = String(rawRowData[columnMapping['name']]);
     const matchedName = await this.matchName(parsedName);
@@ -117,11 +142,22 @@ class GenericGameManager<
         ? rawRowData[columnMapping['language']] as string | undefined
         : undefined,
     );
+    const condition = matchCondition(
+      columnMapping['condition']
+        ? rawRowData[columnMapping['condition']] as string | undefined
+        : undefined,
+    );
     return Promise.resolve({
       id,
-      name: parsedName,
-      matchedName,
+      name: {
+        matchedName,
+        value: parsedName,
+      },
       language,
+      condition,
+      isSigned: !!columnMapping['isSigned']
+        && parseBoolean(String(rawRowData[columnMapping['isSigned']]), ['signed']),
+      comment: columnMapping['comment'] ? String(rawRowData[columnMapping['comment']]) : '',
       quantity: columnMapping['quantity'] ? (Number(rawRowData[columnMapping['quantity']]) || 0) : 0,
       price: columnMapping['price'] ? (Number(rawRowData[columnMapping['price']]) || 0) : 0,
       enabled: !!matchedName,
@@ -138,12 +174,7 @@ class GenericGameManager<
    */
   async parseCsv(
     file: File,
-    columnMapping: ({
-      name: string,
-      quantity: string | undefined,
-      price: string | undefined,
-      language: string | undefined,
-    } & Record<ExtraColumnInputs, string | undefined>),
+    columnMapping: (BaseColumnMapping & Record<ExtraColumnInputs, string | undefined>),
   ): Promise<(CommonParsedRowFields & ExtraParsedRowFields)[]> {
     const data = await readCsv(file);
     const rows = [];
@@ -169,9 +200,12 @@ class GenericGameManager<
     trEl: HTMLTableRowElement,
     row: (CommonParsedRowFields & ExtraParsedRowFields),
   ): Promise<HTMLTableRowElement> {
+    let languageEl: HTMLSelectElement = trEl.querySelector(languageElSelector)!;
+    let conditionEl: HTMLSelectElement = trEl.querySelector(conditionElSelector)!;
+    let signedEl: HTMLInputElement = trEl.querySelector(signedElSelector)!;
+    let commentEl: HTMLInputElement = trEl.querySelector(commentElSelector)!;
     let quantityEl: HTMLInputElement = trEl.querySelector(quantityElSelector)!;
     let priceEl: HTMLInputElement = trEl.querySelector(priceElSelector)!;
-    let languageEl: HTMLSelectElement = trEl.querySelector(languageElSelector)!;
 
     // Check if there's already quantity on this row... if so, we may need to create a new one
     let resolvedEl = trEl;
@@ -180,17 +214,26 @@ class GenericGameManager<
       buttonEl.click();
       resolvedEl = trEl.previousSibling as HTMLTableRowElement;
       // We need to point the fields to those of the new parent trEl and reset them
+      languageEl = resolvedEl.querySelector(languageElSelector)!;
+      languageEl.value = languageEl.options[0]?.value ?? '';
+      conditionEl = resolvedEl.querySelector(conditionElSelector)!;
+      conditionEl.value = conditionEl.options[1]?.value ?? ''; // 1 for NM default
+      signedEl = resolvedEl.querySelector(signedElSelector)!;
+      signedEl.value = signedEl.defaultValue;
+      commentEl = resolvedEl.querySelector(commentElSelector)!;
+      commentEl.value = commentEl.defaultValue;
       quantityEl = resolvedEl.querySelector(quantityElSelector)!;
       quantityEl.value = quantityEl.defaultValue;
       priceEl = resolvedEl.querySelector(priceElSelector)!;
       priceEl.value = priceEl.defaultValue;
-      languageEl = resolvedEl.querySelector(languageElSelector)!;
-      languageEl.value = languageEl.options[0]?.value ?? '';
     }
     // Now input the data
+    languageEl.value = row.language.data.mkmValue.toString();
+    conditionEl.value = row.condition.data.mkmValue.toString();
+    signedEl.checked = row.isSigned;
+    commentEl.value = row.comment;
     quantityEl.value = row.quantity.toString();
     priceEl.value = row.price.toFixed(2);
-    languageEl.value = row.language.data.mkmValue.toString();
 
     return Promise.resolve(resolvedEl);
   }
@@ -207,7 +250,7 @@ class GenericGameManager<
     let count = 0;
     for (const row of rows) {
       const nameEl = websiteRows.find(
-        (el) => compareNormalized(el.textContent, row.matchedName ?? row.name),
+        (el) => compareNormalized(el.textContent, row.name.matchedName ?? row.name.value),
       );
       if (!nameEl) continue;
       const trEl = nameEl.parentElement!.parentElement!.parentElement! as HTMLTableRowElement;
