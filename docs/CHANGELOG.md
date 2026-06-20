@@ -1,6 +1,7 @@
 # Changelog
 
-## Unreleased
+## [1.4.1] 2026-06-20
+Note: version tag `1.4.0` was skipped due to a submission issue - it would be the same as this one.
 
 ### Changes
 - Added support for the condition, signed, and comment fields.
