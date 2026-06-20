@@ -99,14 +99,20 @@ class GenericGameManager<
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   matchName(arg0: string, ...args: string[]): Promise<string | null> {
     const parsedName = arg0;
-    const mappedNames = getWebsiteRows().map((el) => el.textContent);
     let matchedName = null;
-    for (const name of mappedNames) {
-      if (compareNormalized(name, parsedName)) {
-        return Promise.resolve(name);
+    for (const row of getWebsiteRows()) {
+      const rowName = row.textContent;
+      // Look for a translated name besides it
+      const translatedName = row.nextSibling?.textContent ?? '';
+      if (compareNormalized(rowName, parsedName) || compareNormalized(translatedName, parsedName)) {
+        return Promise.resolve(rowName);
       }
+
       // If we don't find an exact match, look for the last one that contains it
-      if (normalizeString(name).includes(normalizeString(parsedName))) matchedName = name;
+      if (
+        normalizeString(rowName).includes(normalizeString(parsedName))
+        || normalizeString(translatedName).includes(normalizeString(parsedName))
+      ) matchedName = rowName;
     }
     return Promise.resolve(matchedName);
   };

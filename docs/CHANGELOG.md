@@ -4,6 +4,7 @@
 
 ### Changes
 - Added support for the condition, signed, and comment fields.
+- Added support for matching english names when the Cardmarket website is in a different language.
 
 
 ## [1.3.3] 2026-05-15
