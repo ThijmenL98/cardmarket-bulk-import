@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Changes
+- Added support for the condition, signed, and comment fields.
+
+
 ## [1.3.3] 2026-05-15
 
 ### Bugfixes

@@ -74,6 +74,15 @@
                     "language": {
                         "label": "Language Column"
                     },
+                    "condition": {
+                        "label": "Condition Column"
+                    },
+                    "isSigned": {
+                        "label": "Signed Column"
+                    },
+                    "comment": {
+                        "label": "Comment Column"
+                    },
                     "quantity": {
                         "label": "Quantity Column"
                     },
@@ -85,6 +94,9 @@
                     "check": "Fill",
                     "name": "Name",
                     "language": "Language",
+                    "condition": "Condition",
+                    "isSigned": "Signed",
+                    "comment": "Comment",
                     "quantity": "Quantity",
                     "price": "Price"
                 }

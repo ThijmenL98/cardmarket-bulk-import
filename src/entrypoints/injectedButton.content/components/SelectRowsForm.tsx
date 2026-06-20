@@ -7,6 +7,7 @@ import { Button, Form, OverlayTrigger, Pagination, Stack, Table, Tooltip } from 
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
+import Checkmark from './Checkmark';
 import { splitIntoBatches, setInArray } from '../../../utils';
 import usePaginatedArray from '../../../utils/usePaginatedArray';
 import type { ParsedRow } from '../game-manager';
@@ -115,20 +116,23 @@ function SelectRowsForm({ rows, onSubmit }: SelectRowsFormProps) {
         <Table striped bordered className="mb-0">
           <thead>
             <tr>
-              <th className="col-md-1">
+              <th className="col">
                 { i18n.t('injectedButton.gameManagers.common.selectRowsFormTable.check') }
               </th>
-              <th className="col">
+              <th className="col-md-6">
                 { i18n.t('injectedButton.gameManagers.common.selectRowsFormTable.name') }
               </th>
-              <th className="col-md-1">
+              <th className="col">
                 { i18n.t('injectedButton.gameManagers.common.selectRowsFormTable.language') }
+              </th>
+              <th className="col">
+                { i18n.t('injectedButton.gameManagers.common.selectRowsFormTable.condition') }
               </th>
               {
                 Object.entries(gameManager.extraTableColumns).map(([key, value]) => {
                   if (!value) return null;
                   if (typeof value === 'string') return (
-                    <th key={key} className="col-md-1">
+                    <th key={key} className="col">
                       { i18n.t(value) }
                     </th>
                   );
@@ -139,10 +143,16 @@ function SelectRowsForm({ rows, onSubmit }: SelectRowsFormProps) {
                   );
                 })
               }
-              <th className="col-md-1">
+              <th className="col">
+                { i18n.t('injectedButton.gameManagers.common.selectRowsFormTable.isSigned') }
+              </th>
+              <th className="col">
+                { i18n.t('injectedButton.gameManagers.common.selectRowsFormTable.comment') }
+              </th>
+              <th className="col">
                 { i18n.t('injectedButton.gameManagers.common.selectRowsFormTable.quantity') }
               </th>
-              <th className="col-md-1">
+              <th className="col">
                 { i18n.t('injectedButton.gameManagers.common.selectRowsFormTable.price') }
               </th>
             </tr>
@@ -153,9 +163,9 @@ function SelectRowsForm({ rows, onSubmit }: SelectRowsFormProps) {
                 <tr
                   key={r.id}
                   className={clsx({
-                    'pe-none': !r.matchedName,
-                    'opacity-25': !r.matchedName,
-                    'opacity-50': r.matchedName && !r.enabled,
+                    'pe-none': !r.name.matchedName,
+                    'opacity-25': !r.name.matchedName,
+                    'opacity-50': r.name.matchedName && !r.enabled,
                   })}
                 >
                   <td>
@@ -183,12 +193,12 @@ function SelectRowsForm({ rows, onSubmit }: SelectRowsFormProps) {
                       trigger={r.enabled ? [] : undefined}
                       placement="left"
                     >
-                      <span className={clsx(!!r.matchedName && !r.enabled && 'text-warning')}>
-                        { r.name }
+                      <span className={clsx(!!r.name.matchedName && !r.enabled && 'text-warning')}>
+                        { r.name.value }
                       </span>
                     </OverlayTrigger>
                     {
-                      r.matchedName && r.matchedName !== r.name && (
+                      r.name.matchedName && r.name.matchedName !== r.name.value && (
                         <>
                           <br />
                           <OverlayTrigger
@@ -200,7 +210,7 @@ function SelectRowsForm({ rows, onSubmit }: SelectRowsFormProps) {
                             placement="left"
                           >
                             <span className="text-light" style={{ fontSize: '0.75rem' }}>
-                              { r.matchedName }
+                              { r.name.matchedName }
                             </span>
                           </OverlayTrigger>
                         </>
@@ -208,15 +218,19 @@ function SelectRowsForm({ rows, onSubmit }: SelectRowsFormProps) {
                     }
                   </td>
                   <td>
-                    <OverlayTrigger
-                      overlay={(
-                        <Tooltip>{ r.language.data.mkmLabels[0] }</Tooltip>
-                      )}
-                    >
-                      <div className={clsx(!r.language.matched && 'opacity-25', 'w-50 mx-auto')}>
+                    <OverlayTrigger overlay={(<Tooltip>{ r.language.data.mkmLabels[0] }</Tooltip>)}>
+                      <div
+                        className={clsx(!r.language.matched && 'opacity-25', 'm-auto')}
+                        style={{ width: 28 }}
+                      >
                         { r.language.data.flagElement }
                       </div>
                     </OverlayTrigger>
+                  </td>
+                  <td>
+                    <div className={clsx(!r.condition.matched && 'opacity-25', 'm-auto')}>
+                      { r.condition.data.badgeElement }
+                    </div>
                   </td>
                   {
                     Object.entries(gameManager.extraTableColumns)
@@ -224,19 +238,21 @@ function SelectRowsForm({ rows, onSubmit }: SelectRowsFormProps) {
                       .map(([k]) => {
                         const value = r[k];
                         if (typeof value === 'boolean') return (
-                          <td key={k}>
-                            <span
-                              className={
-                                value
-                                  ? 'fonticon-check-circle text-success'
-                                  : 'fonticon-cross-circle text-danger'
-                              }
-                            />
-                          </td>
+                          <td key={k}><Checkmark value={value} /></td>
                         );
                         return (<td key={k}>{ String(value) }</td>);
                       })
                   }
+                  <td><Checkmark value={r.isSigned} /></td>
+                  <td>
+                    {
+                      r.comment && (
+                        <OverlayTrigger overlay={<Tooltip>{ r.comment }</Tooltip>}>
+                          <span className="fonticon-comments" />
+                        </OverlayTrigger>
+                      )
+                    }
+                  </td>
                   <td>{ r.quantity }</td>
                   <td>{ `${r.price.toFixed(2)}€` }</td>
                 </tr>
@@ -254,6 +270,9 @@ function SelectRowsForm({ rows, onSubmit }: SelectRowsFormProps) {
                         <td key={k}>&nbsp;</td>
                       ))
                   }
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
                   <td>&nbsp;</td>
                   <td>&nbsp;</td>
                   <td>&nbsp;</td>
