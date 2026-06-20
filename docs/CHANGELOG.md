@@ -6,6 +6,25 @@
 - Added support for the condition, signed, and comment fields.
 - Added support for matching english names when the Cardmarket website is in a different language.
 
+### Housekeeping
+- Upgraded engines:
+  - `node`: `24.15.0` -> `24.17.0`.
+  - `yarn`: `4.14.1` -> `4.17.0`.
+- Upgraded dependencies:
+  - `@hookform/resolvers`: `5.2.2` -> `5.4.0`.
+  - `csv-parse`: `6.2.1` -> `7.0.0`.
+  - `fuse.js`: `7.3.0` -> `7.4.2`.
+  - `react`: `19.2.6` -> `19.2.7`.
+  - `react-dom`: `19.2.6` -> `19.2.7`.
+  - `react-hook-form`: `7.75.0` -> `7.79.0`.
+  - `vite-plugin-node-polyfills`: `0.26.0` -> `0.28.0`.
+  - `@types/bootstrap`: `5.2.10` -> `5.2.11`.
+  - `@types/react`: `19.2.14` -> `19.2.1`.
+  - `eslint`: `9.39.2` -> `9.39.4`.
+  - `eslint-import-resolver-typescript`: `4.4.4` -> `4.4.5`.
+  - `eslint-plugin-react-refresh`: `0.5.2` -> `0.5.3`.
+  - `typescript-eslint`: `8.59.3` -> `8.61.1`.
+
 
 ## [1.3.3] 2026-05-15
 
