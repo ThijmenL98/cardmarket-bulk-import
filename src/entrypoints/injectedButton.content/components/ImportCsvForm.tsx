@@ -16,6 +16,9 @@ type BaseImportFormValues = {
   files: FileList,
   name: string,
   language: string | undefined,
+  condition: string | undefined,
+  isSigned: string | undefined,
+  comment: string | undefined,
   quantity: string | undefined,
   price: string | undefined,
 };
@@ -26,6 +29,9 @@ const baseValidationSchema: yup.ObjectSchema<BaseImportFormValues> = yup.object(
   name: yup.string()
     .required(i18n.t('injectedButton.gameManagers.common.importCsvForm.name.required')),
   language: yup.string(),
+  condition: yup.string(),
+  isSigned: yup.string(),
+  comment: yup.string(),
   quantity: yup.string(),
   price: yup.string(),
 });
@@ -97,6 +103,27 @@ function ImportCsvForm({ onSubmit }: ImportCsvFormProps) {
         formId="importCsvForm.language"
         name="language"
         label={i18n.t('injectedButton.gameManagers.common.importCsvForm.language.label')}
+        options={csvColumns}
+      />
+      <ColumnSelect
+        control={control}
+        formId="importCsvForm.condition"
+        name="condition"
+        label={i18n.t('injectedButton.gameManagers.common.importCsvForm.condition.label')}
+        options={csvColumns}
+      />
+      <ColumnSelect
+        control={control}
+        formId="importCsvForm.isSigned"
+        name="isSigned"
+        label={i18n.t('injectedButton.gameManagers.common.importCsvForm.isSigned.label')}
+        options={csvColumns}
+      />
+      <ColumnSelect
+        control={control}
+        formId="importCsvForm.comment"
+        name="comment"
+        label={i18n.t('injectedButton.gameManagers.common.importCsvForm.comment.label')}
         options={csvColumns}
       />
       {

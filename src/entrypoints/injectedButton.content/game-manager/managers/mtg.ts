@@ -3,9 +3,10 @@ import { sendMessage } from 'webext-bridge/content-script';
 import * as yup from 'yup';
 
 import GenericGameManager from './generic';
-import type { CommonParsedRowFields } from './generic';
+import type { BaseColumnMapping, CommonParsedRowFields } from './generic';
 import { compareNormalized } from '../../../../utils';
 import type { TranslationKey } from '../../../../utils';
+import { parseBoolean } from '../utils';
 
 async function getMTGJSONDataImpl() {
   // We can't fetch inside the content script, so we delegate to the background with messages
@@ -23,7 +24,6 @@ async function matchSetToCardmarketIdImpl(set: string) {
 
 const matchSetToCardmarketId = memoize(matchSetToCardmarketIdImpl);
 
-const VALID_FOIL_VALUES = ['t', '1', 'foil', 'yes'];
 const foilElSelector = 'td input[name^="isFoil"]';
 
 class MtgGameManager extends GenericGameManager<'set' | 'isFoil', { set: string, isFoil: boolean }> {
@@ -40,17 +40,11 @@ class MtgGameManager extends GenericGameManager<'set' | 'isFoil', { set: string,
   async parseRow(
     id: number,
     rawRowData: Record<string, unknown>,
-    columnMapping: {
-      name: string,
-      quantity: string | undefined,
-      price: string | undefined,
-      language: string | undefined,
-      set: string | undefined,
-      isFoil: string | undefined,
-    }) {
+    columnMapping: BaseColumnMapping & { set: string | undefined, isFoil: string | undefined },
+  ) {
     const parsedData = await super.parseRow(id, rawRowData, columnMapping);
     let set = columnMapping['set'] ? String(rawRowData[columnMapping['set']]) : '';
-    let enabled = !!parsedData.matchedName;
+    let enabled = parsedData.enabled;
     if (set) {
       const paramsCode = Number(new URLSearchParams(window.location.search).get('idExpansion'));
       const data = await matchSetToCardmarketId(set);
@@ -65,9 +59,8 @@ class MtgGameManager extends GenericGameManager<'set' | 'isFoil', { set: string,
     return {
       ...parsedData,
       set: set,
-      isFoil: columnMapping['isFoil']
-        ? VALID_FOIL_VALUES.includes(String(rawRowData[columnMapping['isFoil']]).toLowerCase())
-        : false,
+      isFoil: !!columnMapping['isFoil']
+        && parseBoolean(String(rawRowData[columnMapping['isFoil']]), ['foil']),
       enabled,
     };
   }
