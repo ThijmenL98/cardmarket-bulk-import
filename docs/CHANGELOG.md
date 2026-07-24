@@ -6,6 +6,7 @@
 - Updated `eslint` rules for the project.
 - Properly configured `react-compiler`.
 - Added simple test file.
+- Added required Firefox manifest data.
 
 ### Bugfixes
 - Fixed issue where the generic GameManager was always selected if the website was in a non-english language.

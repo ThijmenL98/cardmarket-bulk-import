@@ -13,6 +13,15 @@ export default defineConfig({
   manifest: {
     name: 'Cardmarket Bulk Import',
     default_locale: 'en',
+    browser_specific_settings: {
+      gecko: {
+        id: 'cardmarket-bulk-import@PedroPerpetua',
+        data_collection_permissions: {
+          required: ['none'],
+          optional: ['none'],
+        },
+      },
+    },
   },
   zip: { sourcesRoot: 'src' },
   srcDir: 'src',
