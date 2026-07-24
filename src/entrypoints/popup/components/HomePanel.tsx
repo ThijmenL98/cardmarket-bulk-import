@@ -1,6 +1,6 @@
 import { i18n } from '#imports';
 
-import { Stack, Button, Image } from 'react-bootstrap';
+import { Button, Image, Stack } from 'react-bootstrap';
 
 import type { PanelKey } from './panels-context';
 import Panel from './panels-context/Panel';

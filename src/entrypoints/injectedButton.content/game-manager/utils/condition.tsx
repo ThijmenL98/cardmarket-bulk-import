@@ -1,6 +1,5 @@
-import type { ReactNode } from 'react';
-
 import memoize from 'memoize';
+import type { ReactNode } from 'react';
 
 import { compareNormalized } from '../../../../utils';
 

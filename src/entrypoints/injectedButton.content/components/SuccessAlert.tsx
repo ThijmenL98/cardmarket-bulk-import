@@ -1,6 +1,6 @@
 import { i18n } from '#imports';
-import { useEffect } from 'react';
 
+import { useEffect } from 'react';
 import { Alert } from 'react-bootstrap';
 
 type SuccessAlertProps = {

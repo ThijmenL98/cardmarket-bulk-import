@@ -1,6 +1,6 @@
 import { i18n } from '#imports';
 
-import { Col, Container, Row, Image } from 'react-bootstrap';
+import { Col, Container, Image, Row } from 'react-bootstrap';
 
 import Panel from './panels-context/Panel';
 import Instructions1 from '../../../assets/instructions-1.png';

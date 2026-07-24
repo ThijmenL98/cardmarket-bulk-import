@@ -7,7 +7,7 @@ function readCsvImpl(file: File) {
     reader.readAsText(file);
     reader.onload = (evt) => {
       if (typeof evt.target?.result !== 'string') {
-        reject(`Reader returned ${typeof evt.target?.result} instead of string.`);
+        reject(new Error(`Reader returned ${typeof evt.target?.result} instead of string.`));
         return;
       }
       parse(
@@ -19,12 +19,17 @@ function readCsvImpl(file: File) {
             reject(Error(`Invalid columns :${info?.columns}`));
             return;
           };
-          // @ts-ignore
-          resolve({ columns: info.columns.map(({ name }) => name as string), rows: records });
+          resolve({
+            columns: info.columns.filter((c) => 'name' in c).map(({ name }) => name),
+            rows: records,
+          });
         },
       );
     };
-    reader.onerror = (evt) => reject(evt);
+    reader.onerror = (evt) => {
+      console.error('[cardmarket-bulk-import] Failed to read CSV', evt);
+      reject(new Error('Failed to read CSV'));
+    };
   });
 }
 

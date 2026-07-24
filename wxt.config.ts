@@ -1,3 +1,5 @@
+import babel from '@rolldown/plugin-babel';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { defineConfig } from 'wxt';
 
@@ -12,12 +14,14 @@ export default defineConfig({
     name: 'Cardmarket Bulk Import',
     default_locale: 'en',
   },
-  zip: {
-    sourcesRoot: 'src',
-  },
+  zip: { sourcesRoot: 'src' },
   srcDir: 'src',
   imports: false,
   vite: () => ({
-    plugins: [nodePolyfills()],
+    plugins: [
+      react(),
+      nodePolyfills(),
+      babel({ presets: [reactCompilerPreset()] }),
+    ],
   }),
 });
