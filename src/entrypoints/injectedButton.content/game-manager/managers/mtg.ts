@@ -43,7 +43,7 @@ class MtgGameManager extends GenericGameManager<'set' | 'isFoil', { set: string,
     columnMapping: BaseColumnMapping & { set: string | undefined, isFoil: string | undefined },
   ) {
     const parsedData = await super.parseRow(id, rawRowData, columnMapping);
-    let set = columnMapping['set'] ? String(rawRowData[columnMapping['set']]) : '';
+    let set = columnMapping.set ? String(rawRowData[columnMapping.set]) : '';
     let enabled = parsedData.enabled;
     if (set) {
       const paramsCode = Number(new URLSearchParams(window.location.search).get('idExpansion'));
@@ -58,9 +58,9 @@ class MtgGameManager extends GenericGameManager<'set' | 'isFoil', { set: string,
     }
     return {
       ...parsedData,
-      set: set,
-      isFoil: !!columnMapping['isFoil']
-        && parseBoolean(String(rawRowData[columnMapping['isFoil']]), ['foil']),
+      set,
+      isFoil: !!columnMapping.isFoil
+        && parseBoolean(String(rawRowData[columnMapping.isFoil]), ['foil']),
       enabled,
     };
   }

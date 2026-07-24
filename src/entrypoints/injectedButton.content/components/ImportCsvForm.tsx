@@ -1,9 +1,9 @@
 import { i18n } from '#imports';
-import { useEffect } from 'react';
 
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect } from 'react';
 import { Button, Form, Spinner, Stack } from 'react-bootstrap';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
 
 import ColumnSelect from './ColumnSelect';
@@ -49,12 +49,11 @@ function ImportCsvForm({ onSubmit }: ImportCsvFormProps) {
     control,
     register,
     handleSubmit,
-    watch,
     setError,
     clearErrors,
     formState: { errors: formErrors, touchedFields },
   } = useForm<ImportFormValues, undefined, ImportFormValues>({
-    // @ts-ignore // yup doesn't like the concat here
+    // @ts-expect-error // yup doesn't like the concat here
     resolver: yupResolver(baseValidationSchema.concat(gameManager.extraValidationSchema)),
   });
 
@@ -70,10 +69,10 @@ function ImportCsvForm({ onSubmit }: ImportCsvFormProps) {
     }
   });
 
-  const files = watch('files');
+  const files = useWatch({ control, name: 'files', compute: (data?: FileList) => data });
   useEffect(() => {
-    const f = files?.item(0);
-    if (f) getColumns(f);
+    if (!files || files.length === 0) return;
+    void getColumns(files.item(0)!);
   }, [files, getColumns]);
 
   useEffect(() => {

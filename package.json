@@ -2,7 +2,7 @@
   "name": "cardmarket-bulk-import",
   "description": "Extension to fill in Cardmarket's Bulk Listing form with a CSV file.",
   "private": true,
-  "version": "1.4.1",
+  "version": "1.4.2",
   "type": "module",
   "scripts": {
     "lint": "tsc -b; eslint --fix",
@@ -18,43 +18,45 @@
   "dependencies": {
     "@hookform/resolvers": "5.4.0",
     "@wxt-dev/auto-icons": "1.1.1",
-    "@wxt-dev/i18n": "0.2.5",
+    "@wxt-dev/i18n": "0.2.6",
     "bootstrap": "5.3.8",
     "classnames": "2.5.1",
     "clsx": "2.1.1",
-    "country-flag-icons": "1.6.17",
-    "csv-parse": "7.0.0",
-    "fuse.js": "7.4.2",
+    "country-flag-icons": "1.6.20",
+    "csv-parse": "7.0.1",
+    "fuse.js": "7.5.0",
     "memoize": "11.0.0",
-    "react": "19.2.7",
+    "react": "19.2.8",
     "react-bootstrap": "2.10.10",
-    "react-dom": "19.2.7",
-    "react-hook-form": "7.79.0",
+    "react-dom": "19.2.8",
+    "react-hook-form": "7.82.0",
     "vite-plugin-node-polyfills": "0.28.0",
     "webext-bridge": "6.0.1",
     "yup": "1.7.1"
   },
   "devDependencies": {
+    "@eslint-react/eslint-plugin": "5.17.3",
+    "@rolldown/plugin-babel": "0.2.3",
     "@stylistic/eslint-plugin": "5.10.0",
     "@types/bootstrap": "5.2.11",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "@wxt-dev/module-react": "1.2.2",
-    "eslint": "9.39.4",
+    "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "10.7.0",
     "eslint-import-resolver-alias": "1.1.2",
     "eslint-import-resolver-typescript": "4.4.5",
-    "eslint-plugin-import": "2.32.0",
-    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-import-x": "4.17.1",
     "eslint-plugin-react-hooks": "7.1.1",
     "eslint-plugin-react-refresh": "0.5.3",
     "mtggraphql": "1.0.2",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.61.1",
-    "wxt": "0.20.26"
+    "typescript-eslint": "8.65.0",
+    "wxt": "0.20.27"
   },
   "engines": {
-    "node": "24.17.0",
-    "yarn": "4.17.0"
+    "node": "24.18.0",
+    "yarn": "4.17.1"
   },
-  "packageManager": "yarn@4.17.0"
+  "packageManager": "yarn@4.17.1"
 }

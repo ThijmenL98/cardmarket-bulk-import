@@ -1,6 +1,6 @@
-import { useState, i18n } from '#imports';
+import { i18n, useState } from '#imports';
 
-import { Button, Modal, Image } from 'react-bootstrap';
+import { Button, Image, Modal } from 'react-bootstrap';
 import { createPortal } from 'react-dom';
 
 import ImportCsvForm from './components/ImportCsvForm';
@@ -9,6 +9,8 @@ import SuccessAlert from './components/SuccessAlert';
 import type { ParsedRow } from './game-manager';
 import useGameManager from './game-manager/useGameManager';
 import IconTransparent from '../../assets/icon-transparent.png';
+
+const header = document.body.querySelector('header');
 
 function App() {
   const [show, setShow] = useState(false);
@@ -20,12 +22,10 @@ function App() {
   if (importedRows !== null) content = (
     <SelectRowsForm
       rows={importedRows}
-      onSubmit={(rows) => {
-        gameManager.fillPage(rows).then((filled) => {
-          setShow(false);
-          setFilledCount(filled);
-        });
-      }}
+      onSubmit={(rows) => gameManager.fillPage(rows).then((filled) => {
+        setShow(false);
+        setFilledCount(filled);
+      })}
     />
   );
 
@@ -52,7 +52,7 @@ function App() {
       {
         createPortal(
           <SuccessAlert count={filledCount} onDismiss={() => setFilledCount(null)} />,
-          document.body.querySelector('header')!,
+          header!,
         )
       }
     </>

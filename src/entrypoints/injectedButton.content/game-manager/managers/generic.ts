@@ -66,12 +66,12 @@ export type CommonParsedRowFields = {
  */
 class GenericGameManager<
   ExtraColumnInputs extends string = string,
-  ExtraParsedRowFields extends { [key: string]: unknown } = Record<string, unknown>,
+  ExtraParsedRowFields extends Record<string, unknown> = Record<string, unknown>,
 > {
   /* Singleton Pattern */
   static _instance?: GenericGameManager;
   constructor() {
-    if (!GenericGameManager._instance) GenericGameManager._instance = this as GenericGameManager;
+    GenericGameManager._instance ??= this as GenericGameManager;
     return GenericGameManager._instance as typeof this;
   }
 
@@ -135,16 +135,16 @@ class GenericGameManager<
     rawRowData: Record<string, unknown>,
     columnMapping: (BaseColumnMapping & Record<ExtraColumnInputs, string | undefined>),
   ): Promise<CommonParsedRowFields & ExtraParsedRowFields> {
-    const parsedName = String(rawRowData[columnMapping['name']]);
+    const parsedName = String(rawRowData[columnMapping.name]);
     const matchedName = await this.matchName(parsedName);
     const language = matchLanguage(
-      columnMapping['language']
-        ? rawRowData[columnMapping['language']] as string | undefined
+      columnMapping.language
+        ? rawRowData[columnMapping.language] as string | undefined
         : undefined,
     );
     const condition = matchCondition(
-      columnMapping['condition']
-        ? rawRowData[columnMapping['condition']] as string | undefined
+      columnMapping.condition
+        ? rawRowData[columnMapping.condition] as string | undefined
         : undefined,
     );
     return Promise.resolve({
@@ -155,11 +155,11 @@ class GenericGameManager<
       },
       language,
       condition,
-      isSigned: !!columnMapping['isSigned']
-        && parseBoolean(String(rawRowData[columnMapping['isSigned']]), ['signed']),
-      comment: columnMapping['comment'] ? String(rawRowData[columnMapping['comment']]) : '',
-      quantity: columnMapping['quantity'] ? (Number(rawRowData[columnMapping['quantity']]) || 0) : 0,
-      price: columnMapping['price'] ? (Number(rawRowData[columnMapping['price']]) || 0) : 0,
+      isSigned: !!columnMapping.isSigned
+        && parseBoolean(String(rawRowData[columnMapping.isSigned]), ['signed']),
+      comment: columnMapping.comment ? String(rawRowData[columnMapping.comment]) : '',
+      quantity: columnMapping.quantity ? (Number(rawRowData[columnMapping.quantity]) || 0) : 0,
+      price: columnMapping.price ? (Number(rawRowData[columnMapping.price]) || 0) : 0,
       enabled: !!matchedName,
     } as CommonParsedRowFields & ExtraParsedRowFields);
   }
@@ -215,9 +215,9 @@ class GenericGameManager<
       resolvedEl = trEl.previousSibling as HTMLTableRowElement;
       // We need to point the fields to those of the new parent trEl and reset them
       languageEl = resolvedEl.querySelector(languageElSelector)!;
-      languageEl.value = languageEl.options[0]?.value ?? '';
+      languageEl.value = languageEl.options[0].value;
       conditionEl = resolvedEl.querySelector(conditionElSelector)!;
-      conditionEl.value = conditionEl.options[1]?.value ?? ''; // 1 for NM default
+      conditionEl.value = conditionEl.options[1].value; // 1 for NM default
       signedEl = resolvedEl.querySelector(signedElSelector)!;
       signedEl.value = signedEl.defaultValue;
       commentEl = resolvedEl.querySelector(commentElSelector)!;

@@ -1,3 +1,5 @@
+import babel from '@rolldown/plugin-babel';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import { defineConfig } from 'wxt';
 
@@ -11,13 +13,23 @@ export default defineConfig({
   manifest: {
     name: 'Cardmarket Bulk Import',
     default_locale: 'en',
+    browser_specific_settings: {
+      gecko: {
+        id: '{dd001943-0849-4e40-af2c-bf2b9bd66636}',
+        data_collection_permissions: {
+          required: ['none'],
+        },
+      },
+    },
   },
-  zip: {
-    sourcesRoot: 'src',
-  },
+  zip: { sourcesRoot: 'src' },
   srcDir: 'src',
   imports: false,
   vite: () => ({
-    plugins: [nodePolyfills()],
+    plugins: [
+      react(),
+      nodePolyfills(),
+      babel({ presets: [reactCompilerPreset()] }),
+    ],
   }),
 });

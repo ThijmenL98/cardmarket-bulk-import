@@ -19,7 +19,7 @@ export function setInArray<T>(arr: T[], value: T, setAs: boolean) {
   return arr.filter((v) => v != value);
 }
 
-export function splitIntoBatches(count: number, batchSize: number = 100) {
+export function splitIntoBatches(count: number, batchSize = 100) {
   const retval = [];
   for (let start = 1; start <= count; start += batchSize) {
     const end = Math.min(start + batchSize - 1, count);
