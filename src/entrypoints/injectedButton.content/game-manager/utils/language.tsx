@@ -1,25 +1,24 @@
-import type { ReactNode } from 'react';
-
 import {
-  GB as EN,
-  FR,
+  CN,
+  CZ,
   DE,
   ES,
-  IT,
-  CN,
-  JP,
-  PT,
-  RU,
-  KR,
-  TW,
-  NL,
-  PL,
-  CZ,
+  FR,
+  GB as EN,
   HU,
   ID,
+  IT,
+  JP,
+  KR,
+  NL,
+  PL,
+  PT,
+  RU,
   TH,
+  TW,
 } from 'country-flag-icons/react/3x2';
 import memoize from 'memoize';
+import type { ReactNode } from 'react';
 
 import { compareNormalized } from '../../../../utils';
 
@@ -172,8 +171,8 @@ function getAvailableLanguagesImpl() {
   const selectEl: HTMLSelectElement | null = document.querySelector(`tr select.form-select[name*="idLanguage"]`);
   if (!selectEl?.options || selectEl.options.length === 0) return [];
   const languages = [];
-  for (let i = 0; i < selectEl.options.length; i++) {
-    const languageValue = Number(selectEl.options[i].value);
+  for (const htmlOpt of selectEl.options) {
+    const languageValue = Number(htmlOpt.value);
     const opt = mkmLanguages.find(({ mkmValue }) => mkmValue === languageValue);
     if (opt) languages.push(opt);
   }

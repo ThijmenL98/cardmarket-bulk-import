@@ -1,9 +1,9 @@
-import { useContext } from 'react';
+import { use } from 'react';
 
 import PanelsContext from '.';
 
 function usePanelsContext() {
-  return useContext(PanelsContext);
+  return use(PanelsContext);
 }
 
 export default usePanelsContext;

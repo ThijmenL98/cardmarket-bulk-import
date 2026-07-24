@@ -13,9 +13,9 @@ export type PanelsContextValue = {
 
 const PanelsContext = createContext<PanelsContextValue>({
   currentPanel: DEFAULT_PANEL,
-  setPanel: () => {},
+  setPanel: () => null,
   canGoBack: false,
-  goBack: () => {},
+  goBack: () => null,
 });
 
 export default PanelsContext;

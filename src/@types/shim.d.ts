@@ -1,6 +1,6 @@
 import type { ProtocolWithReturn } from 'webext-bridge';
 
-import { getMTGJSONData } from '../entrypoints/background/utils/mtgjson';
+import type { getMTGJSONData } from '../entrypoints/background/utils/mtgjson';
 
 declare module 'webext-bridge' {
   export interface ProtocolMap {

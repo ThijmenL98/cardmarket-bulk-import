@@ -1,4 +1,4 @@
-import { i18n, browser } from '#imports';
+import { browser, i18n } from '#imports';
 
 import { Image } from 'react-bootstrap';
 

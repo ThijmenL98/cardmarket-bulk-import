@@ -1,14 +1,14 @@
 import { i18n } from '#imports';
-import { useEffect, useMemo, useState } from 'react';
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
+import { useEffect, useMemo, useState } from 'react';
 import { Button, Form, OverlayTrigger, Pagination, Stack, Table, Tooltip } from 'react-bootstrap';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import * as yup from 'yup';
 
 import Checkmark from './Checkmark';
-import { splitIntoBatches, setInArray } from '../../../utils';
+import { setInArray, splitIntoBatches } from '../../../utils';
 import usePaginatedArray from '../../../utils/usePaginatedArray';
 import type { ParsedRow } from '../game-manager';
 import useGameManager from '../game-manager/useGameManager';
@@ -36,7 +36,6 @@ function SelectRowsForm({ rows, onSubmit }: SelectRowsFormProps) {
 
   const {
     control,
-    watch,
     handleSubmit,
     formState: { errors: formErrors },
     setValue,
@@ -49,7 +48,7 @@ function SelectRowsForm({ rows, onSubmit }: SelectRowsFormProps) {
     (data) => onSubmit(rows.filter((r) => data.selectedRows.includes(r.id))),
   );
 
-  const selected = watch('selectedRows');
+  const selected = useWatch({ control, name: 'selectedRows' });
 
   const filteredRows = useMemo(
     () => {
@@ -287,7 +286,7 @@ function SelectRowsForm({ rows, onSubmit }: SelectRowsFormProps) {
               { /* Bootstrap invalid-feedback requires an .is-invalid sibling */ }
               <div className="is-invalid d-none" />
               <div className="invalid-feedback mt-0 fs-6">
-                { formErrors.selectedRows?.message }
+                { formErrors.selectedRows.message }
               </div>
             </>
           )
@@ -317,7 +316,7 @@ function SelectRowsForm({ rows, onSubmit }: SelectRowsFormProps) {
                     }
                   </Pagination>
                 )
-              : <div /> // Empty div for the stack's justify content
+              : <div>{/* Empty div for the stack's justify content */}</div>
           }
           <Button type="submit">
             { i18n.t('injectedButton.modal.selectRowsForm.submit') }

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import type { PropsWithChildren } from 'react';
-
 import { Button, Image, Stack } from 'react-bootstrap';
 
 import usePanelsContext from './usePanelsContext';

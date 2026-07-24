@@ -15,9 +15,9 @@ function PanelsContextProvider({ children }: PropsWithChildren) {
   }), [current]);
 
   return (
-    <PanelsContext.Provider value={contextValue}>
+    <PanelsContext value={contextValue}>
       { children }
-    </PanelsContext.Provider>
+    </PanelsContext>
   );
 }
 

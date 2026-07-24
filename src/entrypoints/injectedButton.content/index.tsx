@@ -1,6 +1,6 @@
-import { defineContentScript, createIntegratedUi } from '#imports';
+import { createIntegratedUi, defineContentScript } from '#imports';
 
-import ReactDOM from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 
 import App from './App';
 
@@ -12,7 +12,7 @@ export default defineContentScript({
       anchor: 'div#BulkAccordion',
       append: 'after',
       onMount: (container) => {
-        const root = ReactDOM.createRoot(container);
+        const root = createRoot(container);
         root.render(<App />);
         return root;
       },
