@@ -1,6 +1,6 @@
 # Changelog
 
-## UNRELEASED
+## [1.4.2] 2026-07-24
 
 ### Changes
 - Updated `eslint` rules for the project.
@@ -10,6 +10,22 @@
 
 ### Bugfixes
 - Fixed issue where the generic GameManager was always selected if the website was in a non-english language.
+
+### Housekeeping
+- Upgraded engines:
+  - `node`: `24.17.0` -> `24.18.0`.
+  - `yarn`: `4.17.0` -> `4.17.1`.
+- Upgraded dependencies:
+  - `@wxt-dev/i18n`: `0.2.5` -> `0.2.6`.
+  - `country-flag-icons`: `1.6.17` - `1.6.20`.
+  - `csv-parse`: `7.0.0` -> `7.0.1`.
+  - `fuse.js`: `7.4.2` -> `7.5.0`.
+  - `react`: `19.2.7` -> `19.2.8`.
+  - `react-dom`: `19.2.7` -> `19.2.8`.
+  - `react-hook-form`: `7.79.0` -> `7.82.0`.
+  - `eslint`: `9.39.4` -> `10.7.0`.
+  - `typescript-eslint`: `8.61.1` -> `8.65.0`.
+  - `wxt`: `0.20.26` -> `0.20.27`.
 
 
 ## [1.4.1] 2026-06-20

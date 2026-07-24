@@ -15,10 +15,9 @@ export default defineConfig({
     default_locale: 'en',
     browser_specific_settings: {
       gecko: {
-        id: 'cardmarket-bulk-import@PedroPerpetua',
+        id: '{dd001943-0849-4e40-af2c-bf2b9bd66636}',
         data_collection_permissions: {
           required: ['none'],
-          optional: ['none'],
         },
       },
     },
