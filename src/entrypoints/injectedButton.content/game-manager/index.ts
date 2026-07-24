@@ -10,8 +10,10 @@ export type ParsedRow = ArrayElement<Awaited<ReturnType<GenericGameManager['pars
  * @returns The GameManager that should be used for the current URL.
  */
 export function getCurrentManager(): GenericGameManager {
-  switch (window.location.pathname) {
-    case '/en/Magic/Stock/ListingMethods/BulkListing':
+  // Remove the language identifier from the beginning
+  const location = window.location.pathname.split('/').slice(2).join('/');
+  switch (location) {
+    case 'Magic/Stock/ListingMethods/BulkListing':
       return new MtgGameManager();
     default:
       return new GenericGameManager();

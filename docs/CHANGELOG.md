@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+### Bugfixes
+- Fixed issue where the generic GameManager was always selected if the website was in a non-english language.
+
+
 ## [1.4.1] 2026-06-20
 Note: version tag `1.4.0` was skipped due to a submission issue - it would be the same as this one.
 
