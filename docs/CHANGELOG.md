@@ -2,6 +2,11 @@
 
 ## UNRELEASED
 
+### Changes
+- Updated `eslint` rules for the project.
+- Properly configured `react-compiler`.
+- Added simple test file.
+
 ### Bugfixes
 - Fixed issue where the generic GameManager was always selected if the website was in a non-english language.
 
