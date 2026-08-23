@@ -1,44 +1,26 @@
-cardmarket-bulk-import
+cardmarket-bulk-import (Pokémon fork)
 ===
 
-This extension allows you to use a CSV file to fill the "List bulk items" option in Cardmarket.
+A fork of [PedroPerpetua/cardmarket-bulk-import](https://github.com/PedroPerpetua/cardmarket-bulk-import) that adds Pokémon reverse holo support.
 
-Download it on the [Chrome Webstore](https://chromewebstore.google.com/detail/cardmarket-bulk-import/lbjpmgmfhmgaenclkmfjfompieopaimb) or [Firefox's addons](https://addons.mozilla.org/en-US/firefox/addon/cardmarket-bulk-import/).
+**Everything about what the extension is and how to use it lives in the [original README](https://github.com/PedroPerpetua/cardmarket-bulk-import#readme) - usage, the demo, the FAQ, and the roadmap. This file only covers what's different here.**
 
-
-![Demo](docs/demo.gif)
-
-
-## Common questions
-
-### Can I use this extension to import my entire collection at once?
-**No! It's not a tool designed to import a CSV of your collection all at once.** This extension's primary focus is to fill the "List bulk items" form in Cardmarket; this means that we're also limited by the usefulness of this form - Cardmarket can only show (and take) up to 100 items at a time, so we would have to import the items in batches of 100 different articles; the extension tries to make this process as seamless as possible, but it can't do more than that.
-
-My recommendation is to split your CSVs by expansion, and then importing each rarity one by one.
-
-### Does this extension support all games available on Cardmarket?
-**Yes! Partially!** Currently Magic is the one that supports more properties, but all games support basic importation. More fields planned in the future (PRs welcome!).
-
-### Will this extension handle multiple rows of the same card?
-**Yes!** If you have, for example, foil and non foil rows on your CSV, the extension will add them separately.
-
-### Can some rows be wrongfully filled?
-**It can happen!** I can't guarantee there are no bugs or issues in some older set tables / names, so it's possible it fails to fill the table correctly. **Always double check the filled form before submitting the cards for sale!** _I take no responsibility for mistakenly made listings._
-
-### Is this extension allowed by Cardmarket themselves?
-**Yes!** Although they have not checked / vetted the extension, I have confirmed with support that it was okay for me to publish it and it's okay for users to use.
-
-### Can this extension steal my data?
-**No!** Even though the extension is allowed to read and write specifically on websites where the url matches _\*://\*.cardmarket.com/\*/\*/Stock/ListingMethods/BulkListing\*_, the extension **does not read or write over your personal information**. It simply reads and fills the table of bulk listing in order to do it's job!
-
-The entire code is open source and you can verify it here; you can even clone this repository and launch it yourself locally if you don't trust the store version.
+This fork is not published to the Chrome Web Store or Firefox Add-ons; it's meant to be built and loaded locally. Install the upstream version from the stores if you don't need the changes below.
 
 
-## Running it locally as an unpacked extension
+## What's different
 
-If you'd rather run your own build than install from the stores - to try unreleased changes, or just to verify the code yourself - you can load it into Chrome as an unpacked extension.
+Cardmarket's bulk listing form renders a per-row "Reverse Holo" checkbox for Pokémon, and nothing filled it in - Magic's manager only handles `isFoil`, and Pokémon fell through to the generic manager, which ignored reverse holo entirely. Since a reverse holo and a normal printing are the same product at very different prices, every reverse copy was silently listed as a normal one.
 
-You'll need [Node.js](https://nodejs.org) and Yarn; the exact versions this project expects are pinned under `engines` in `package.json`. Yarn 4 ships through Corepack, so `corepack enable` is usually all it takes to get the right version.
+- A new optional **Reverse Holo** column in the import form, mapped from your CSV like any other field.
+- Accepted values: `reverse`, `reverse holo`, `reverseholo`, `reverse_holo`, `rh`, plus the usual `true` / `yes` / `1`. Plain `holo` is deliberately **not** accepted, since a non-reverse holo would then be listed as a reverse.
+- The column shows up in the confirmation table, so you can check it before the form is filled.
+- Games whose rows don't render the checkbox are unaffected - the fill is skipped when it's absent.
+
+
+## Building and loading it
+
+You'll need [Node.js](https://nodejs.org) and Yarn; the versions this project expects are pinned under `engines` in `package.json`. Yarn 4 ships through Corepack, so `corepack enable` is usually enough.
 
 ```bash
 git clone https://github.com/ThijmenL98/cardmarket-bulk-import
@@ -47,24 +29,8 @@ yarn install
 yarn build
 ```
 
-That leaves you a complete extension in `.output/chrome-mv3`. To load it:
+Then open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, and select the `.output/chrome-mv3` folder. Open any Cardmarket bulk listing page and the import button is injected into the form.
 
-1. Open `chrome://extensions` and turn on **Developer mode** (top right).
-2. Click **Load unpacked** and select the `.output/chrome-mv3` folder.
-3. Open any Cardmarket bulk listing page - the import button is injected into the form.
+For Firefox, `yarn build:firefox` writes to `.output/firefox-mv2`; load its `manifest.json` through `about:debugging` > **This Firefox** > **Load Temporary Add-on**.
 
-For Firefox, `yarn build:firefox` writes to `.output/firefox-mv2`, which you can load through `about:debugging` > **This Firefox** > **Load Temporary Add-on** by picking its `manifest.json`.
-
-### While developing
-
-`yarn dev` is nicer than rebuilding by hand: it launches a fresh browser with the extension already loaded and reloads it as you edit. Use `yarn dev:firefox` for Firefox.
-
-If you do use `yarn build`, note that Chrome won't pick up changes on its own - hit the reload icon on the extension's card in `chrome://extensions` after each build. Unpacked extensions also don't auto-update, and Chrome will warn about developer mode extensions on startup; both are expected, and neither applies to the store builds.
-
-`yarn zip` packages the build into `.output/` if you want to move it to another machine. Bear in mind Chrome can't install a zip directly - unpack it first, then load the folder.
-
-
-## Roadmap & Contributions
-I have improvements planned when I find the time to work on them! Check the [TODO](docs/TODO.md) file for the planned upgrades.
-
-I will accept contributions to this project. Open a pull request to the develop branch and I'll review it as soon as I can!
+A few things worth knowing about unpacked extensions: `yarn dev` launches a browser with the extension loaded and reloads on edit, which beats rebuilding by hand; after a plain `yarn build` you have to hit the reload icon on the extension's card yourself; they don't auto-update, and Chrome warns about developer mode extensions on startup. `yarn zip` packages a build to move to another machine - unpack it before loading, Chrome can't install a zip directly.
